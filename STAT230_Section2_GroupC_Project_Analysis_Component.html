@@ -132,54 +132,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code> total_cup_points   aftertaste        aroma            body      
- Min.   :59.83    Min.   :6.170   Min.   :5.080   Min.   :5.080  
- 1st Qu.:81.10    1st Qu.:7.250   1st Qu.:7.420   1st Qu.:7.330  
- Median :82.50    Median :7.420   Median :7.580   Median :7.500  
- Mean   :82.15    Mean   :7.407   Mean   :7.572   Mean   :7.523  
- 3rd Qu.:83.67    3rd Qu.:7.580   3rd Qu.:7.750   3rd Qu.:7.670  
- Max.   :90.58    Max.   :8.670   Max.   :8.750   Max.   :8.580  
-     flavor         moisture         species         
- Min.   :6.080   Min.   :0.00000   Length:1338       
- 1st Qu.:7.330   1st Qu.:0.09000   Class :character  
- Median :7.580   Median :0.11000   Mode  :character  
- Mean   :7.526   Mean   :0.08836                     
- 3rd Qu.:7.750   3rd Qu.:0.12000                     
- Max.   :8.830   Max.   :0.28000                     </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$total_cup_points
-[1] 2.686862
-
-$aftertaste
-[1] 0.3503042
-
-$aroma
-[1] 0.3159156
-
-$body
-[1] 0.3078146
-
-$flavor
-[1] 0.3413824
-
-$moisture
-[1] 0.04829774
-
-$species
-NULL</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>X
@@ -187,172 +142,49 @@ Arabica Robusta
    1310      28 </code></pre>
 </div>
 </div>
+<p>The bar chart of species indicates that there are 1310 observations of Arabica beans and only 28 observations of Robusta beans. Given that we have so few observations of Robusta included in our data set, it would not make a balanced analysis to include Robusta beans in our data set; we don’t have enough data to predict values for Robusta. As a result, we filtered our data set to include only Arabica beans and removed the <em>species</em> categorical variable.</p>
+<p>The density plot for <em>total cup points</em> (mean = 82.15, SD = 2.68), <em>aftertaste</em> (mean = 7.407, SD = 0.35), <em>aroma</em> (mean = 7.572, SD = 0.32), body (mean = 7.523, SD = 0.31), and flavor (mean = 7.526, SD = 0.34) are all normally distributed with no obvious outliers or skewness. The density for <em>moisture</em> looks bimodal with one smaller peak around 0% and one peak around 10-12%.</p>
 </section>
 <section id="step-2-bivariate-analysis" class="level1">
 <h1>Step 2: Bivariate Analysis</h1>
 <p>We will create a ‘ggpairs’ plot to compare each of the explanatory variables (aftertaste, aroma, body, flavor, moisture, species) to the predictor variable (total_cup_points) as well as to each other. This will generate scatterplots and correlation coefficients for every combination of variables. First, we will look at possible relationships between the explanatory variables and the predictor variable (total_cup_points), through scatterplots in the ggpairs plot. This is to ensure that our data meets the conditions for modeling and inference. Next, in the ggpairs plot, we will look at the correlation coefficients between each explanatory variable and the predictor variable to see which has the strongest correlation with our predictor variable.</p>
 <p>We will also use this same ggpairs plot to observe the relationship among each of the explanatory variables with each other. If there are any explanatory variables that seem to have a high correlation with other explanatory variables, there might be issues of multicollinearity. In that case, we would use the variance inflation factor (VIF) to determine which of the correlated explanatory variables to keep, and which to discard.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>quant_vars <span class="ot">&lt;-</span> coffee_data <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(aftertaste, aroma, body, flavor, moisture, total_cup_points)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a correlation matrix</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(quant_vars, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cor_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>quant_vars <span class="ot">&lt;-</span> coffee_data <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(aftertaste, aroma, body, flavor, moisture, total_cup_points)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a correlation matrix</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(quant_vars, <span class="at">use =</span> <span class="st">"complete.obs"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cor_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 aftertaste      aroma       body     flavor   moisture
-aftertaste        1.0000000  0.6942922  0.6338406  0.8595288 -0.1981757
-aroma             0.6942922  1.0000000  0.5298738  0.7403143 -0.1486476
-body              0.6338406  0.5298738  1.0000000  0.6304190 -0.1656371
-flavor            0.8595288  0.7403143  0.6304190  1.0000000 -0.1587654
-moisture         -0.1981757 -0.1486476 -0.1656371 -0.1587654  1.0000000
-total_cup_points  0.8124787  0.6858045  0.6283559  0.8266557 -0.1384837
+aftertaste        1.0000000  0.6928712  0.6656483  0.8581995 -0.1966740
+aroma             0.6928712  1.0000000  0.5540145  0.7403953 -0.1473367
+body              0.6656483  0.5540145  1.0000000  0.6616503 -0.1997590
+flavor            0.8581995  0.7403953  0.6616503  1.0000000 -0.1591203
+moisture         -0.1966740 -0.1473367 -0.1997590 -0.1591203  1.0000000
+total_cup_points  0.8194878  0.6924888  0.6470746  0.8315098 -0.1487261
                  total_cup_points
-aftertaste              0.8124787
-aroma                   0.6858045
-body                    0.6283559
-flavor                  0.8266557
-moisture               -0.1384837
+aftertaste              0.8194878
+aroma                   0.6924888
+body                    0.6470746
+flavor                  0.8315098
+moisture               -0.1487261
 total_cup_points        1.0000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Another matrix</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  quant_vars,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"points"</span>, <span class="at">color =</span> <span class="st">"lightblue"</span>, <span class="at">size =</span> <span class="fl">0.8</span>)),</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"densityDiag"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>)),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"cor"</span>, <span class="at">size =</span> <span class="dv">4</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Another matrix</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  quant_vars,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"points"</span>, <span class="at">color =</span> <span class="st">"lightblue"</span>, <span class="at">size =</span> <span class="fl">0.8</span>)),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">diag =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"densityDiag"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>)),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">upper =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="fu">wrap</span>(<span class="st">"cor"</span>, <span class="at">size =</span> <span class="dv">4</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create boxplots of each quantitative variable by species</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(total_cup_points <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Total Cup Points by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Total Cup Points"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(aftertaste <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Aftertaste by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Aftertaste"</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(aroma <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Aroma by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Aroma"</span>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(body <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Body by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Body"</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(flavor <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Flavor by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Flavor"</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> <span class="fu">gf_boxplot</span>(moisture <span class="sc">~</span> species, <span class="at">data =</span> coffee_data, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gf_labs</span>(<span class="at">title =</span> <span class="st">"Moisture by Species"</span>, <span class="at">x =</span> <span class="st">"Species"</span>, <span class="at">y =</span> <span class="st">"Moisture"</span>)</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange them in a grid</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, p4, p5, p6, <span class="at">ncol =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run t-tests comparing each variable across species</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(total_cup_points <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(aftertaste <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(aroma <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(body <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>t5 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(flavor <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>t6 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(moisture <span class="sc">~</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Print results</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>t1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  total_cup_points by species
-t = 2.8028, df = 28.415, p-value = 0.009028
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- 0.353131 2.266233
-sample estimates:
-mean in group Arabica mean in group Robusta 
-             82.17861              80.86893 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>t2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  aftertaste by species
-t = -2.3885, df = 28.218, p-value = 0.02384
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- -0.29029738 -0.02230132
-sample estimates:
-mean in group Arabica mean in group Robusta 
-             7.403344              7.559643 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>t3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  aroma by species
-t = -2.3466, df = 28.328, p-value = 0.02616
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- -0.24889014 -0.01694955
-sample estimates:
-mean in group Arabica mean in group Robusta 
-              7.56958               7.70250 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>t4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  body by species
-t = 0.1215, df = 27.189, p-value = 0.9042
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- -0.2649036  0.2982634
-sample estimates:
-mean in group Arabica mean in group Robusta 
-             7.523466              7.506786 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>t5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  flavor by species
-t = -1.8382, df = 28.483, p-value = 0.07649
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- -0.22594519  0.01213494
-sample estimates:
-mean in group Arabica mean in group Robusta 
-             7.523809              7.630714 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>t6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  moisture by species
-t = 2.0782, df = 27.782, p-value = 0.04705
-alternative hypothesis: true difference in means between group Arabica and group Robusta is not equal to 0
-95 percent confidence interval:
- 0.000323145 0.045927673
-sample estimates:
-mean in group Arabica mean in group Robusta 
-           0.08883969            0.06571429 </code></pre>
 </div>
 </div>
 </section>
@@ -364,33 +196,31 @@ mean in group Arabica mean in group Robusta
 <p>Finally, with our list of explanatory variables that pass the conditions and significant interactions, we will create our final multiple linear regression.</p>
 <p>Best subsets</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package 'leaps' was built under R version 4.4.3</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>best_subset <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(total_cup_points <span class="sc">~</span> aftertaste <span class="sc">+</span> aroma <span class="sc">+</span> body <span class="sc">+</span> flavor <span class="sc">+</span> moisture <span class="sc">+</span> species,  <span class="at">data =</span> coffee_data, <span class="at">nbest =</span> <span class="dv">1</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">summary</span>(best_subset), <span class="fu">data.frame</span>(rsq, adjr2, cp, rss, outmat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>best_subset <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(total_cup_points <span class="sc">~</span> aftertaste <span class="sc">+</span> aroma <span class="sc">+</span> body <span class="sc">+</span> flavor <span class="sc">+</span> moisture,  <span class="at">data =</span> coffee_data, <span class="at">nbest =</span> <span class="dv">1</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">summary</span>(best_subset), <span class="fu">data.frame</span>(rsq, adjr2, cp, rss, outmat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               rsq     adjr2         cp      rss aftertaste aroma body flavor
-1  ( 1 ) 0.6833596 0.6831226 353.538938 3056.248                            *
-2  ( 1 ) 0.7231461 0.7227314 143.496237 2672.224          *                 *
-3  ( 1 ) 0.7368399 0.7362481  72.514975 2540.050          *                 *
-4  ( 1 ) 0.7445179 0.7437513  33.595053 2465.941          *          *      *
-5  ( 1 ) 0.7499503 0.7490117   6.643087 2413.507          *     *    *      *
-6  ( 1 ) 0.7502586 0.7491328   7.000000 2410.532          *     *    *      *
-         moisture speciesRobusta
-1  ( 1 )                        
-2  ( 1 )                        
-3  ( 1 )                       *
-4  ( 1 )                       *
-5  ( 1 )                       *
-6  ( 1 )        *              *</code></pre>
+1  ( 1 ) 0.6914086 0.6911727 278.821022 2914.392                            *
+2  ( 1 ) 0.7339597 0.7335526  62.292831 2512.532          *                 *
+3  ( 1 ) 0.7405366 0.7399406  30.516160 2450.418          *     *           *
+4  ( 1 ) 0.7457912 0.7450120   5.530285 2400.793          *     *    *      *
+5  ( 1 ) 0.7460892 0.7451156   6.000000 2397.979          *     *    *      *
+         moisture
+1  ( 1 )         
+2  ( 1 )         
+3  ( 1 )         
+4  ( 1 )         
+5  ( 1 )        *</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>subset_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_cup_points <span class="sc">~</span> aftertaste <span class="sc">+</span> body <span class="sc">+</span> flavor <span class="sc">+</span> species, <span class="at">data =</span> coffee_data)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>subset_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_cup_points <span class="sc">~</span> aftertaste <span class="sc">+</span> body <span class="sc">+</span> flavor, <span class="at">data =</span> coffee_data)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: carData</code></pre>
 </div>
@@ -413,56 +243,44 @@ Attaching package: 'car'</code></pre>
 
     recode</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(subset_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(subset_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>aftertaste       body     flavor    species 
-  4.061487   1.760083   4.016905   1.008079 </code></pre>
+<pre><code>aftertaste       body     flavor 
+  4.057225   1.901489   4.018930 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>final_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_cup_points <span class="sc">~</span> flavor <span class="sc">+</span> aftertaste <span class="sc">+</span> species <span class="sc">+</span> body, <span class="at">data =</span> coffee_data)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(final_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>final_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(total_cup_points <span class="sc">~</span> flavor <span class="sc">+</span> aftertaste <span class="sc">+</span> body, <span class="at">data =</span> coffee_data)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(final_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = total_cup_points ~ flavor + aftertaste + species + 
-    body, data = coffee_data)
+lm(formula = total_cup_points ~ flavor + aftertaste + body, data = coffee_data)
 
 Residuals:
      Min       1Q   Median       3Q      Max 
--17.1104  -0.1700   0.2308   0.5986   4.8550 
+-17.1086  -0.1617   0.2321   0.6062   4.8594 
 
 Coefficients:
-               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)     27.5148     0.9649  28.515  &lt; 2e-16 ***
-flavor           3.5321     0.2184  16.174  &lt; 2e-16 ***
-aftertaste       2.7629     0.2140  12.911  &lt; 2e-16 ***
-speciesRobusta  -2.1022     0.2608  -8.060 1.68e-15 ***
-body             1.0147     0.1603   6.329 3.36e-10 ***
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  27.5548     1.0059  27.394  &lt; 2e-16 ***
+flavor        3.5280     0.2221  15.884  &lt; 2e-16 ***
+aftertaste    2.7730     0.2181  12.716  &lt; 2e-16 ***
+body          1.0036     0.1782   5.632 2.18e-08 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 1.36 on 1333 degrees of freedom
-Multiple R-squared:  0.7445,    Adjusted R-squared:  0.7438 
-F-statistic: 971.1 on 4 and 1333 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 1.37 on 1306 degrees of freedom
+Multiple R-squared:  0.7403,    Adjusted R-squared:  0.7397 
+F-statistic:  1241 on 3 and 1306 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coffee_data, <span class="fu">aes</span>(<span class="at">x =</span> flavor, <span class="at">y =</span> total_cup_points, <span class="at">color =</span> species)) <span class="sc">+</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Flavor vs Total Cup Points by Species"</span>,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Flavor"</span>,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total Cup Points"</span>) <span class="sc">+</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="STAT230_Section2_GroupC_Project_Analysis_Component_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(coffee_data, aes(x = flavor, y = total_cup_points, color = species)) +</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_point(alpha = 0.7) +</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   geom_smooth(method = "lm", se = FALSE) +</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   labs(title = "Flavor vs Total Cup Points by Species",</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#        x = "Flavor",</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#        y = "Total Cup Points") +</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   theme_minimal()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

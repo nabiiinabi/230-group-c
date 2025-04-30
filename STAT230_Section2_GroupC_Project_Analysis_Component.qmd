@@ -72,32 +72,55 @@ p9 <- gf_bar(~ species, data = coffee_data, fill = "lightblue") |>
        	x = "Species", y="Count")
 ```
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-# Plot all of the histograms
-grid.arrange(p1, p3, p4, p6, p7, p8, nrow = 2)
-# Plot the bar chart
-p9
-
-  summary(coffee_data)
-  sapply(coffee_data, function(x) if(is.numeric(x)) sd(x, na.rm = TRUE))
+```{r, echo = FALSE, warning = FALSE, message = FALSE, fig.width = 12, fig.height = 4}
+# Plot the histograms and bar chart
+grid.arrange(
+  p9,          
+  grid.arrange(p1, p3, p4, p6, p7, p8, nrow = 2),
+  widths = c(1, 3)  
+)
+# Tally by species
   tally(coffee_data$species)
-
 ```
 
-The bar chart of species indicates that there are 1310 observations of Arabica beans and only 28 observations of Robusta beans. Given that we have so few observations of Robusta included in our data set, it would not male a balanced analysis to include Robusta beans in our data set. As a result, we filtered our data set to include only Arabica beans and removed the *species* categorical variable.
+```{r, echo = FALSE, eval = FALSE}
+# Don't evaluate this in the render
+  summary(coffee_data)
+  sapply(coffee_data, function(x) if(is.numeric(x)) sd(x, na.rm = TRUE))
+```
 
-```{r}
+### Bar Chart
+
+The bar chart of species indicates that there are 1310 observations of Arabica beans and only 28 observations of Robusta beans. Given that we have so few observations of Robusta included in our data set, it would not make a balanced analysis to include Robusta beans in our data set; we don't have enough data to predict values for Robusta. **As a result, we filtered our data set to include only Arabica beans and removed the *species* categorical variable.**
+
+```{r, echo = FALSE}
 coffee_data <- coffee_data |>
   filter(species == "Arabica")
 ```
 
-The density plot for *total cup points* (mean = 82.15, SD = 2.68), *aftertaste* (mean = 7.407, SD = 0.35), *aroma* (mean = 7.572, SD = 0.32), body (mean = 7.523, SD = 0.31), and flavor (mean = 7.526, SD = 0.34) are all normally distributed with no obvious outliers or skewness. The density for *moisture* looks bimodal with one smaller peak around 0% and one peak around 10-12%. There is not an equal number of observations in each species.
+### Histograms
 
-# Step 2: Bivariate Analysis
+The density plot for *total cup points* (mean = 82.15, SD = 2.68), *aftertaste* (mean = 7.407, SD = 0.35), *aroma* (mean = 7.572, SD = 0.32), body (mean = 7.523, SD = 0.31), and flavor (mean = 7.526, SD = 0.34) are all normally distributed with no obvious outliers or skewness. The density for *moisture* looks bimodal with one smaller peak around 0% and one peak around 10-12%.
 
-We will create a ‘ggpairs’ plot to compare each of the explanatory variables (aftertaste, aroma, body, flavor, moisture, species) to the predictor variable (total_cup_points) as well as to each other. This will generate scatterplots and correlation coefficients for every combination of variables. First, we will look at possible relationships between the explanatory variables and the predictor variable (total_cup_points), through scatterplots in the ggpairs plot. This is to ensure that our data meets the conditions for modeling and inference. Next, in the ggpairs plot, we will look at the correlation coefficients between each explanatory variable and the predictor variable to see which has the strongest correlation with our predictor variable.
+# Bivariate Analyses
 
-We will also use this same ggpairs plot to observe the relationship among each of the explanatory variables with each other. If there are any explanatory variables that seem to have a high correlation with other explanatory variables, there might be issues of multicollinearity. In that case, we would use the variance inflation factor (VIF) to determine which of the correlated explanatory variables to keep, and which to discard.
+### Quantitative vs. Categorical Variables
+
+Since we removed *species* as a variable, we did not create boxplots of *total cup points* vs. quantitative predictors, with species as a factor.
+
+### Quantitative vs. Quantitative Variables
+
+To check for bivariate relationships between quantitative variables, we created a scatterplot of every combination of quantitative variables and derived their respective correlation coefficients. 
+
+Linearity Condition: The scatterplots of aftertaste, aroma, body, and flavor on total_cup_points appear linear, so they fit the linearity condition. The aforementioned quantitative predictors have moderately positive linear relationships with total_cup_points, with their correlation coefficients respectively being 0.812, 0.686, 0.628, and 0.827. Moisture does not appear to have a linear relationship with any other quantitative variables. 
+
+Equal Variance (Heteroskedasticity) Condition: The relationship between all of our quantitative variables and total_cup_points does not look homoskedastic, as the spread of total_cup_points increases when aftertaste, aroma, body, and flavor are rated low. The relationship between moisture and total_cup_points has a butterfly shape, as the spread increases and decreases throughout different moisture ratings. None of our quantitative predictors fit the equal variance condition, indicating that we might need to transform our model. 
+
+Independence Condition: Each bean was rated independently regardless of other beans, so it meets the independence condition. 
+
+No Outliers Condition: There are some outliers in the scatterplots between each quantitative predictor and total_cup_points, so it does not meet the no outliers condition. 
+
+Collinearity Condition: Given that aftertaste, aroma, body, and flavor have moderate correlations between each other, we would like to check the variation inflation factor (VIF) for possible concerns with multicollinearity. However, we will need to construct a model to check VIF, so we will return to this after building a model.
 
 ```{r}
 quant_vars <- coffee_data |>
@@ -116,48 +139,6 @@ ggpairs(
 )
 ```
 
-```{r}
-# Create boxplots of each quantitative variable by species
-p1 <- gf_boxplot(total_cup_points ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Total Cup Points by Species", x = "Species", y = "Total Cup Points")
-
-p2 <- gf_boxplot(aftertaste ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Aftertaste by Species", x = "Species", y = "Aftertaste")
-
-p3 <- gf_boxplot(aroma ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Aroma by Species", x = "Species", y = "Aroma")
-
-p4 <- gf_boxplot(body ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Body by Species", x = "Species", y = "Body")
-
-p5 <- gf_boxplot(flavor ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Flavor by Species", x = "Species", y = "Flavor")
-
-p6 <- gf_boxplot(moisture ~ species, data = coffee_data, fill = "lightblue") %>%
-  gf_labs(title = "Moisture by Species", x = "Species", y = "Moisture")
-
-# Arrange them in a grid
-grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 6)
-```
-
-```{r}
-# Run t-tests comparing each variable across species
-t1 <- t.test(total_cup_points ~ species, data = coffee_data)
-t2 <- t.test(aftertaste ~ species, data = coffee_data)
-t3 <- t.test(aroma ~ species, data = coffee_data)
-t4 <- t.test(body ~ species, data = coffee_data)
-t5 <- t.test(flavor ~ species, data = coffee_data)
-t6 <- t.test(moisture ~ species, data = coffee_data)
-
-# Print results
-t1
-t2
-t3
-t4
-t5
-t6
-```
-
 # Step 3: Building Models
 
 After analyzing the correlation matrix and VIF values, we will remove explanatory variables that are collinear with each other (with VIFs higher than 5) and prioritize explanatory variables with the highest correlation to total_cup_points.
@@ -172,31 +153,27 @@ Best subsets
 
 ```{r}
 library(leaps)
-best_subset <- regsubsets(total_cup_points ~ aftertaste + aroma + body + flavor + moisture + species,  data = coffee_data, nbest = 1)
+best_subset <- regsubsets(total_cup_points ~ aftertaste + aroma + body + flavor + moisture,  data = coffee_data, nbest = 1)
 with(summary(best_subset), data.frame(rsq, adjr2, cp, rss, outmat))
 ```
 
 ```{r}
-
-```
-
-```{r}
-subset_model <- lm(total_cup_points ~ aftertaste + body + flavor + species, data = coffee_data)
+subset_model <- lm(total_cup_points ~ aftertaste + body + flavor, data = coffee_data)
 
 library(car)
 vif(subset_model)
 
-final_model <- lm(total_cup_points ~ flavor + aftertaste + species + body, data = coffee_data)
+final_model <- lm(total_cup_points ~ flavor + aftertaste + body, data = coffee_data)
 summary(final_model)
 
 ```
 
 ```{r}
-ggplot(coffee_data, aes(x = flavor, y = total_cup_points, color = species)) +
-  geom_point(alpha = 0.7) +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "Flavor vs Total Cup Points by Species",
-       x = "Flavor",
-       y = "Total Cup Points") +
-  theme_minimal()
+# ggplot(coffee_data, aes(x = flavor, y = total_cup_points, color = species)) +
+#   geom_point(alpha = 0.7) +
+#   geom_smooth(method = "lm", se = FALSE) +
+#   labs(title = "Flavor vs Total Cup Points by Species",
+#        x = "Flavor",
+#        y = "Total Cup Points") +
+#   theme_minimal()
 ```
