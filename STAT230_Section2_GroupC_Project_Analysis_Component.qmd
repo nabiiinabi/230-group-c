@@ -12,6 +12,8 @@ library(readr)
 library(gridExtra)
 library(tidyverse)
 library(GGally)
+library(broom)
+library(grid)
 
 coffee_data <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/06bca976827f922af8c1f62db67e6c1a7f0dcd4b/data/2020/2020-07-07/coffee_ratings.csv")
 coffee_data <- coffee_data |>
@@ -106,21 +108,46 @@ The density plot for *total cup points* (mean = 82.15, SD = 2.68), *aftertaste* 
 
 ### Quantitative vs. Categorical Variables
 
-Since we removed *species* as a variable, we did not create boxplots of *total cup points* vs. quantitative predictors, with species as a factor.
+Since we removed *species* as a variable, we did not create boxplots of *total_cup_points* vs. quantitative predictors, with species as a factor.
 
 ### Quantitative vs. Quantitative Variables
 
 To check for bivariate relationships between quantitative variables, we created a scatterplot of every combination of quantitative variables and derived their respective correlation coefficients. 
 
-Linearity Condition: The scatterplots of aftertaste, aroma, body, and flavor on total_cup_points appear linear, so they fit the linearity condition. The aforementioned quantitative predictors have moderately positive linear relationships with total_cup_points, with their correlation coefficients respectively being 0.812, 0.686, 0.628, and 0.827. Moisture does not appear to have a linear relationship with any other quantitative variables. 
+Linearity Condition: The scatterplots of *aftertaste, aroma, body,* and *flavor* on *total_cup_points* appear linear, so they fit the linearity condition. The aforementioned quantitative predictors have moderately positive linear relationships with *total_cup_points*, with their correlation coefficients respectively being 0.812, 0.686, 0.628, and 0.827. *Moisture* does not appear to have a linear relationship with *total_cup_points* or any other predictor variables, indicating that it does not pass the linearity condition. There are also two clusters in all *moisture* scatterplots plots, which reflected the bimodal distribution of *moisture*.
 
-Equal Variance (Heteroskedasticity) Condition: The relationship between all of our quantitative variables and total_cup_points does not look homoskedastic, as the spread of total_cup_points increases when aftertaste, aroma, body, and flavor are rated low. The relationship between moisture and total_cup_points has a butterfly shape, as the spread increases and decreases throughout different moisture ratings. None of our quantitative predictors fit the equal variance condition, indicating that we might need to transform our model. 
+```{r, echo = FALSE}
+# making tests mod so we can see equal variance of each quant pred vs total cup pts
+aftertastemod <- lm(total_cup_points ~ aftertaste, data = coffee_data)
+aromamod <- lm(total_cup_points ~ aroma, data = coffee_data)
+bodymod <- lm(total_cup_points ~ body, data = coffee_data)
+flavormod <- lm(total_cup_points ~ flavor, data = coffee_data)
+moisturemod <- lm(total_cup_points ~ moisture, data = coffee_data)
+
+# Make a resids plot for each individual quant predictor vs cup points
+# Residual plots for aftertaste, aroma, body,flavor, moisture respectively
+aftertasteresids <- mplot(aftertastemod, which = 1)
+aromaresids <- mplot(aromamod, which = 1)
+bodyresids <- mplot(bodymod, which = 1)
+flavorresids <- mplot(flavormod, which = 1)
+moistureresids <- mplot(moisturemod, which = 1)
+note <- textGrob("",
+                 gp = gpar(fontsize = 10),
+                 just = "left")
+
+# Organize all resid plots
+grid.arrange(aftertasteresids, aromaresids, bodyresids, flavorresids, moistureresids, nrow = 2)
+```
+
+Equal Variance Condition: We plotted the residuals between our quantitative predictors (respectively, *aftertaste, aroma, body, flavor, moisture respectively*) and *total_cup_points*. The relationship between all of our quantitative variables and total_cup_points looks heteroskedastic, as the spread of *total_cup_points* increases when *aftertaste, aroma, body,* and *flavor* are rated low. The relationship between moisture and total_cup_points has a butterfly shape, as the spread increases and decreases throughout different moisture ratings. None of our quantitative predictors fit the equal variance condition, indicating that we might need to transform the predictors.
 
 Independence Condition: Each bean was rated independently regardless of other beans, so it meets the independence condition. 
 
-No Outliers Condition: There are some outliers in the scatterplots between each quantitative predictor and total_cup_points, so it does not meet the no outliers condition. 
+No Outliers Condition: There are some outliers in the scatterplots between each quantitative predictor and total_cup_points, so it does not meet the no outliers condition. In general, there are a lot of outliers when the fitted value is low.
 
 Collinearity Condition: Given that aftertaste, aroma, body, and flavor have moderate correlations between each other, we would like to check the variation inflation factor (VIF) for possible concerns with multicollinearity. However, we will need to construct a model to check VIF, so we will return to this after building a model.
+
+No transformation could make *moisture'*s distribution unimodal. Also, it met the fewest of the conditions and had the weakest correlation with *total_cup_points*, so **we removed moisture from the possible variables**.
 
 ```{r}
 quant_vars <- coffee_data |>
@@ -140,6 +167,8 @@ ggpairs(
 ```
 
 # Step 3: Building Models
+
+We ran an automated variable selection approach to select the best subset of predictor variables to include in models of different sizes. Based on the best subsets output, we selected the four-predictor model with aftertaste, body, flavor, and species as predictors after including only significant variables and balancing high parsimony, high adjusted R2, and low Mallows’ Cp.
 
 After analyzing the correlation matrix and VIF values, we will remove explanatory variables that are collinear with each other (with VIFs higher than 5) and prioritize explanatory variables with the highest correlation to total_cup_points.
 
